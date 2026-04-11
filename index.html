@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Growth • Login</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    radial-gradient(circle at 20% 20%,#00f2ff22,transparent 40%),
+    radial-gradient(circle at 80% 80%,#00ff8822,transparent 40%),
+    linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+  padding:20px;
+}
+.card{
+  width:100%;
+  max-width:420px;
+  padding:30px;
+  border-radius:25px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 40px rgba(0,255,200,.25);
+}
+.logo{
+  text-align:center;
+  font-size:32px;
+  font-weight:900;
+  margin-bottom:30px;
+  background:linear-gradient(90deg,#00f2ff,#00ff88,#00f2ff);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:glowMove 4s linear infinite;
+}
+@keyframes glowMove{0%{background-position:0% center}100%{background-position:200% center}}
+input{
+  width:100%;
+  padding:14px;
+  margin:10px 0;
+  border:none;
+  border-radius:18px;
+  background:#003545;
+  color:#fff;
+  font-size:15px;
+}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border:none;
+  border-radius:30px;
+  font-weight:800;
+  font-size:15px;
+  background:linear-gradient(90deg,#00f2ff,#00ff88);
+  color:#05222b;
+  cursor:pointer;
+  position:relative;
+}
+button:disabled{opacity:.6;cursor:not-allowed}
+.loader{
+  width:18px;
+  height:18px;
+  border:3px solid #fff;
+  border-top:3px solid transparent;
+  border-radius:50%;
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  animation:spin 1s linear infinite;
+  display:none;
+}
+@keyframes spin{100%{transform:translateY(-50%) rotate(360deg)}}
+.link{margin-top:14px;text-align:center;color:#00f2ff;font-weight:600;cursor:pointer}
+.msg{min-height:22px;margin-top:12px;text-align:center;font-weight:700}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Social Growth</div>
+
+  <div id="loginBox">
+    <input id="loginUser" placeholder="Username" autocomplete="username">
+    <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password">
+    <button id="loginBtn" type="button">
+      Login
+      <span class="loader" id="loginLoader"></span>
+    </button>
+    <div class="link" id="showSignupBtn">Create New Account</div>
+  </div>
+
+  <div id="signupBox" class="hidden">
+    <input id="suUser" placeholder="Username" autocomplete="username">
+    <input id="suGmail" type="email" placeholder="Gmail" autocomplete="email">
+    <input id="suPass" type="password" placeholder="Password" autocomplete="new-password">
+    <button id="signupBtn" type="button">
+      Create Account
+      <span class="loader" id="signupLoader"></span>
+    </button>
+    <div class="link" id="showLoginBtn">Back to Login</div>
+  </div>
+
+  <div class="msg" id="msg"></div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycby0UHijonDZaPPVyGpjKsAsc9OUTJusetjoQMwygHmiwPd7otW7B1p0D_oIwmuh5rIbIw/exec";
+
+const loginBox = document.getElementById("loginBox");
+const signupBox = document.getElementById("signupBox");
+const msg = document.getElementById("msg");
+
+const loginUser = document.getElementById("loginUser");
+const loginPass = document.getElementById("loginPass");
+const loginBtn = document.getElementById("loginBtn");
+const loginLoader = document.getElementById("loginLoader");
+
+const suUser = document.getElementById("suUser");
+const suGmail = document.getElementById("suGmail");
+const suPass = document.getElementById("suPass");
+const signupBtn = document.getElementById("signupBtn");
+const signupLoader = document.getElementById("signupLoader");
+
+if (localStorage.getItem("userID")) {
+  window.location.href = "home.html";
+}
+
+document.getElementById("showSignupBtn").addEventListener("click", showSignup);
+document.getElementById("showLoginBtn").addEventListener("click", showLogin);
+loginBtn.addEventListener("click", login);
+signupBtn.addEventListener("click", signup);
+
+function showSignup() {
+  loginBox.classList.add("hidden");
+  signupBox.classList.remove("hidden");
+  msg.textContent = "";
+}
+
+function showLogin() {
+  signupBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
+  msg.textContent = "";
+}
+
+async function apiRequest(payload) {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error("Network error. Please try again.");
+  }
+
+  return response.json();
+}
+
+async function login() {
+  const username = loginUser.value.trim();
+  const password = loginPass.value.trim();
+
+  if (!username || !password) {
+    msg.textContent = "Enter username & password";
+    return;
+  }
+
+  loginBtn.disabled = true;
+  loginLoader.style.display = "block";
+  msg.textContent = "";
+
+  try {
+    const data = await apiRequest({
+      action: "login",
+      username,
+      password
+    });
+
+    if (data.ok && data.userID) {
+      localStorage.setItem("userID", data.userID);
+      window.location.href = "home.html";
+      return;
+    }
+
+    msg.textContent = data.msg || "Invalid username or password";
+  } catch (error) {
+    msg.textContent = error.message || "Something went wrong";
+  } finally {
+    loginBtn.disabled = false;
+    loginLoader.style.display = "none";
+  }
+}
+
+async function signup() {
+  const username = suUser.value.trim();
+  const gmail = suGmail.value.trim();
+  const password = suPass.value.trim();
+
+  if (!username || !gmail || !password) {
+    msg.textContent = "Fill all fields";
+    return;
+  }
+
+  signupBtn.disabled = true;
+  signupLoader.style.display = "block";
+  msg.textContent = "Checking...";
+
+  try {
+    const data = await apiRequest({
+      action: "signup",
+      username,
+      gmail,
+      password
+    });
+
+    if (data.ok) {
+      msg.textContent = "Account created successfully";
+      showLogin();
+      return;
+    }
+
+    msg.textContent = data.msg || "Username or Gmail already exists";
+  } catch (error) {
+    msg.textContent = error.message || "Something went wrong";
+  } finally {
+    signupBtn.disabled = false;
+    signupLoader.style.display = "none";
+  }
+}
+</script>
+</body>
+</html>
