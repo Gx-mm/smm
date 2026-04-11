@@ -1,60 +1,64 @@
-<h1 align="center">🚀 GrowX</h1>
+# School Management System (Website + ERP + Admin Panel)
 
-<p align="center">
-India's Trusted & Cheapest Social Media Marketing Platform 💙
-</p>
+Production-ready full-stack School Management System for 5000+ students with public website, role-based dashboards, and secure APIs.
 
-<p align="center">
-  <a href="https://grow.xo.je"><img src="https://img.shields.io/badge/🌐 Visit Website-GrowX-blue?style=for-the-badge"></a>
-  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Users-Growing-orange?style=for-the-badge">
-</p>
+## Tech Stack
+- Frontend: React + Vite + CSS
+- Backend: Node.js + Express
+- Database: MySQL
+- Auth: JWT + bcrypt
+- Payments: Stripe (extensible for Razorpay/UPI)
 
----
+## Project Structure
 
-## 🚀 Website Update Notice
+```bash
+.
+├── backend
+│   ├── .env.example
+│   ├── package.json
+│   └── src
+│       ├── config
+│       ├── controllers
+│       ├── middleware
+│       ├── models
+│       ├── routes
+│       ├── services
+│       ├── utils
+│       └── server.js
+├── frontend
+│   ├── package.json
+│   ├── index.html
+│   ├── vite.config.js
+│   └── src
+│       ├── api
+│       ├── components
+│       ├── context
+│       ├── layouts
+│       ├── pages
+│       ├── routes
+│       ├── styles
+│       └── main.jsx
+├── database
+│   └── schema.sql
+└── docs
+    └── setup.md
+```
 
-We have officially moved to a new domain for a **faster, secure, and better experience**.
+## Core Features
+- Public website pages: Home, About, Academics, Faculty, Gallery, Events, Admission, Contact.
+- JWT auth with role-based access (student/teacher/admin).
+- Student dashboard: profile, attendance, results, fees, assignments, notifications.
+- Teacher dashboard: attendance marking, assignments upload, class overview.
+- Admin panel: analytics, CRUD for core modules, admissions review, CMS modules.
+- Payment flow + receipt PDF generation.
+- Security hardening with Helmet, CORS, rate limit, validation.
+- Email notifications (forgot password), bilingual dictionary endpoints, FAQ chatbot, dark/light mode.
 
-👇🏻👇🏻**New Website:**  
+## Setup Instructions
+See: [`docs/setup.md`](docs/setup.md)
 
-[Visit GrowX](https://grow.xo.je)
-
-👇🏻👇🏻**Instagram Page**👇🏻👇🏻
-
-.[Instagram](https://www.instagram.com/growxsmm?igsh=c2t2NDgzemM2NGgz)
-
-⚠️ Please update your bookmarks and use the new link.
-
----
-
-## 💡 About GrowX
-
-GrowX is a powerful SMM platform that helps users grow their social media presence easily.
-
-### 🔥 Features:
-- 💸 Cheapest SMM Services in India
-- 💰  Auto Payment Approval System 
-- 🤖 Ai Chat system 
-- 🔐 Secure Login System
-- ⚡ Fast Order Processing
-
----
-
-## 📢 Join Our Community
-
-👇🏻👇🏻📲 WhatsApp Channel:  
-
-.[Whatsapp Channel](https://whatsapp.com/channel/0029VbCBclKEgGfGSs1CEg0U)
-
----
-
-## ❤️ Support
-
-If you like this project, don't forget to ⭐ the repo and share with others!
-
----
-
-<p align="center">
-Made with ❤️ by Team GrowX
-</p>
+## Deployment Notes
+- Use PM2 or Docker for backend process management.
+- Add HTTPS at reverse proxy (Nginx / Cloud load balancer).
+- Configure MySQL read replica + backups for scale.
+- Enable CDN and object storage for uploads at scale.
